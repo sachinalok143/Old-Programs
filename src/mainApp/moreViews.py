@@ -9,7 +9,7 @@ from django.contrib.auth import (
 	logout,
 	)
 from django.http import HttpResponseRedirect
-
+from django.db.models import Sum,Avg
 
 
 Category_set=Category.objects.all().order_by("Name")
@@ -279,7 +279,8 @@ def getSellerSingleBook(request,id=None):
 	bookDetail=completeBookDetail(book,bookEdition,d,C)
 		# print (bookDetailList)\
 
-	allReviews=Review.objects.filter(Book_id=book.id).order_by("-Created_at")
+	allReviews=Review.objects.filter(Book_id=bookEdition.id).order_by("-Created_at")
+	indiRating=Review.objects.filter(Book_id=bookEdition.id).order_by("-Created_at").aggregate(Avg('Ratings'))
 	class reviewDetail:
 		def __init__(self, review=None, customer=None,user=None):
 			self.review = review
@@ -292,9 +293,9 @@ def getSellerSingleBook(request,id=None):
 		customer=Customer.objects.get(id=aReview.Customer_id)
 		user=User.objects.get(id=customer.user_id)
 		reviewList.append(reviewDetail( aReview,customer,user))
-	
+	# print(indiRating)
 	return render(request,"Seller/singleView.html",
-		{"bookDetail":bookDetail,"categories":Category_set,"form":form,"reviewList":reviewList})
+		{"bookDetail":bookDetail,"categories":Category_set,"indiRating":indiRating,"form":form,"reviewList":reviewList})
 def aboutUs(request):
 	return render(request,"Notifications/aboutUs.html",{})
 def faqsView(request):

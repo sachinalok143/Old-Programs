@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .forms import *
 from .models import *
 from .backends import *
+from django.db.models import Sum,Avg
 from django.contrib.auth import (
 	authenticate,
 	get_user_model,
@@ -69,9 +70,11 @@ def customerLoginView(request):
 		logedInCustomerProfile=Customer.objects.filter(user_id=user.id)
 		if not logedInCustomerProfile.count()>0:
 			error="Email and Password does not matched."
-			return render(request,"Authentication/customerLogin.html",{"form":form,"error":error,"categories":Category_set})
+			return render(request,"Authentication/customerLogin.html",
+				{"form":form,"error":error,"categories":Category_set})
 		else :
 			login(request,user)
+
 	if request.user.is_authenticated():		
 		class orderObjectDetail(object):
 			def __init__(self, orderObject=None, bookEdition=None):
@@ -107,7 +110,8 @@ def customerLoginView(request):
 		# return render(request,"cartView.html",{"totalPrice":totalPrice,
 		#  "Customer":customer,"cartObjectList":cartObjectList, "categories":Category_set})
 		return render(request,"Authentication/customerProfileView.html",context)
-	return render(request,"Authentication/customerLogin.html",{"form":form,"categories":Category_set})
+	return render(request,"Authentication/customerLogin.html",
+		{"form":form,"categories":Category_set})
 
 def customerRegisterView(request):
 	# title="Register"
@@ -155,7 +159,8 @@ def customerRegisterView(request):
 		}
 		
 		return render(request,"Authentication/customerProfileView.html",context)
-	return render(request,"Authentication/customerRegister.html",{"form1":form1,"form2":form2,"title":title,"categories":Category_set})
+	return render(request,"Authentication/customerRegister.html",
+		{"form1":form1,"form2":form2,"title":title,"categories":Category_set})
 	
 
 title="You are loged in as Seller!"
@@ -175,7 +180,8 @@ def sellerLoginView(request):
 		logedInCustomerProfile=Seller.objects.filter(User_id=user.id)
 		if not logedInCustomerProfile.count()>0:
 			error="Email and Password does not matched."
-			return render(request,"Authentication/sellerLogin.html",{"form":form,"error":error,"categories":Category_set})
+			return render(request,"Authentication/sellerLogin.html",
+				{"form":form,"error":error,"categories":Category_set})
 		else :
 			login(request,user)
 	if request.user.is_authenticated():	
@@ -209,11 +215,13 @@ def sellerLoginView(request):
 		if  not request.user.id:
 			request.user.id=0
 
-		return render(request,"Authentication/sellerProfile.html",{"categories":Category_set,"seller":seller,
+		return render(request,"Authentication/sellerProfile.html",
+			{"categories":Category_set,"seller":seller,
 			"form2":form2,"form3":form3,"catform":catform})
 	if  not request.user.id:
 			request.user.id=0
-	return render(request,"Authentication/sellerLogin.html",{"form":form,"categories":Category_set})
+	return render(request,"Authentication/sellerLogin.html",
+		{"form":form,"categories":Category_set})
 
 
 def sellerRegisterView(request):
@@ -270,11 +278,13 @@ def sellerRegisterView(request):
 			return HttpResponseRedirect('')
 		if  not request.user.id:
 			request.user.id=0
-		return render(request,"Authentication/sellerProfile.html",{"categories":Category_set,"seller":seller,
+		return render(request,"Authentication/sellerProfile.html",
+			{"categories":Category_set,"seller":seller,
 			"form2":form2,"form3":form3,"catform":catform})
 	if  not request.user.id:
 			request.user.id=0
-	return render(request,"Authentication/sellerRegister.html",{"form1":form1,"form2":form2,"title":title,"categories":Category_set})
+	return render(request,"Authentication/sellerRegister.html",
+		{"form1":form1,"form2":form2,"title":title,"categories":Category_set})
 	
 title="You are loged in as Admin!"
 # Create your views here.
@@ -293,21 +303,24 @@ def adminLoginView(request):
 		logedInCustomerProfile=Admin.objects.filter(User_id=user.id)
 		if not logedInCustomerProfile.count()>0:
 			error="Email and Password does not matched."
-			return render(request,"Authentication/adminLogin.html",{"form":form,"error":error,"categories":Category_set})
+			return render(request,"Authentication/adminLogin.html",
+				{"form":form,"error":error,"categories":Category_set})
 			# raise forms.ValidationError("You are not registered.")
 		else :
 			# print ("else")
 			login(request,user)
 			sellers=Seller.objects.all()
 			return render(request,"Admin/adminProfile.html",{"sellers":sellers})
-	# return render(request,"Authentication/adminLogin.html",{"form":form,"categories":Category_set})
+	# return render(request,"Authentication/adminLogin.html",
+	# {"form":form,"categories":Category_set})
 	if request.user.is_authenticated():
 			# print ("out")	
 		if not Admin.objects.filter(User_id=request.user.id).count()>0:
 			return HttpResponseRedirect('../accounts/logout')
 		sellers=Seller.objects.all()
 		return render(request,"Admin/adminProfile.html",{"sellers":sellers})
-	return render(request,"Authentication/adminLogin.html",{"form":form,"categories":Category_set})
+	return render(request,"Authentication/adminLogin.html",
+		{"form":form,"categories":Category_set})
 
 
 def adminRegisterView(request):
@@ -369,7 +382,8 @@ def getBooksByCategory(request,id=None):
 				# print (d)
 				bookDetailList.append(completeBookDetail(book,bookEdition,d))
 		# print (bookDetailList)
-	return render(request,"categoryView.html",{"bookDetailList":bookDetailList,"categories":Category_set,"CategoryName":C})
+	return render(request,"categoryView.html",{"bookDetailList":bookDetailList,
+		"categories":Category_set,"CategoryName":C})
 
 def getSingleBook(request,id=None):
 	form=ReviewForm(request.POST or None)
@@ -391,7 +405,8 @@ def getSingleBook(request,id=None):
 	bookDetail=completeBookDetail(book,bookEdition,d,C)
 		# print (bookDetailList)\
 
-	allReviews=Review.objects.filter(Book_id=book.id).order_by("-Created_at")
+	allReviews=Review.objects.filter(Book_id=bookEdition.id).order_by("-Created_at")
+	indiRating=Review.objects.filter(Book_id=bookEdition.id).order_by("-Created_at").aggregate(Avg('Ratings'))
 	class reviewDetail:
 		def __init__(self, review=None, customer=None,user=None):
 			self.review = review
@@ -404,8 +419,9 @@ def getSingleBook(request,id=None):
 		customer=Customer.objects.get(id=aReview.Customer_id)
 		user=User.objects.get(id=customer.user_id)
 		reviewList.append(reviewDetail( aReview,customer,user))
-	
-	return render(request,"singleView.html",{"bookDetail":bookDetail,"categories":Category_set,"form":form,"reviewList":reviewList})
+		
+	return render(request,"singleView.html",{"bookDetail":bookDetail,
+		"categories":Category_set,"form":form,"reviewList":reviewList,"indiRating":indiRating})
 
 def addPublisher(request):
 	form=PublisherForm(request.POST or None )
@@ -414,5 +430,5 @@ def addPublisher(request):
 	if form.is_valid():
 		form.save()
 		return HttpResponseRedirect("../seller-login")
-	return render(request,"Authentication/addPublisher.html",{"categories":Category_set,"seller":seller,
-			"form":form})
+	return render(request,"Authentication/addPublisher.html",
+		{"categories":Category_set,"seller":seller,"form":form})

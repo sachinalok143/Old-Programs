@@ -51,8 +51,8 @@ INSTALLED_APPS = (
     'crispy_forms',
     'registration',
 
-    'djng',
-    'easy_thumbnails',
+    # 'djng',
+    # 'easy_thumbnails',
     #my app
     'mainApp',
 )
