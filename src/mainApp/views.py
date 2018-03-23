@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .forms import *
 from .models import *
 from .backends import *
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Sum,Avg
 from django.contrib.auth import (
 	authenticate,
@@ -369,7 +370,7 @@ def getBooksByCategory(request,id=None):
 			self.book = book
 			self.bookEdition = bookEdition
 			self.discountedPrice=discountedPrice
-	bookDetailList=[]
+	bookDetailList1=[]
 	for bookCategory in bookCategories:
 		books=Book.objects.filter(id=bookCategory.Book_id)
 		# print (books)
@@ -380,8 +381,16 @@ def getBooksByCategory(request,id=None):
 				d=bookEdition.Price*bookEdition.Discount/100
 				d=bookEdition.Price-d
 				# print (d)
-				bookDetailList.append(completeBookDetail(book,bookEdition,d))
+				bookDetailList1.append(completeBookDetail(book,bookEdition,d))
 		# print (bookDetailList)
+	paginator = Paginator(bookDetailList1, 9)
+	page = request.GET.get('page')
+	try:
+		bookDetailList = paginator.page(page)
+	except PageNotAnInteger:
+		bookDetailList = paginator.page(1)
+	except EmptyPage:
+		bookDetailList = paginator.page(paginator.num_pages)
 	return render(request,"categoryView.html",{"bookDetailList":bookDetailList,
 		"categories":Category_set,"CategoryName":C})
 

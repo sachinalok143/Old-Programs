@@ -30,7 +30,7 @@
 				</div>																			
 			</div>
 			<div class="col-md-8 products-right">
-				<div class="products-right-grid">
+				<!-- <div class="products-right-grid">
 					<div class="products-right-grids">
 						<div class="sorting">
 							<select id="country" onchange="change_country(this.value)" class="frm-field required sect">
@@ -50,8 +50,13 @@
 						</div>
 						<div class="clearfix"> </div>
 					</div>
+				</div> -->
+				
+				{%ifequal  bookDetailList|length 0%}
+				<div class="alert alert-info">
+				<h1 style="text-align: center;padding-top: 150px;padding-bottom: 150px;" >No Books Available In This Category</h1>
 				</div>
-				<table id="myTable">
+				{%endifequal%}
 				{% for bookDetail in bookDetailList%}
 
 				{% if forloop.counter|divisibleby:4%}	
@@ -67,23 +72,23 @@
 									<figure>
 										<div class="snipcart-item block">
 											<div class="snipcart-thumb">
-											<a href="{% url 'get_single_book' id=bookDetail.bookEdition.id%}"><img title=" " alt=" " src="../media/{{bookDetail.bookEdition.CoverImage}}" style="max-height:100px "></a>		
+												<a href="{% url 'get_single_book' id=bookDetail.bookEdition.id|upper%}"><img title=" " alt=" " src="../media/{{bookDetail.bookEdition.CoverImage}}" style="max-height:100px "></a>		
 												<p>{{bookDetail.book.Title}}&nbsp;<span style="font-size: 10px; color: red">{{bookDetail.bookEdition.Edition}} Edition</span></p>
 
 												<h4> ₹{{bookDetail.discountedPrice}} <span> ₹{{bookDetail.bookEdition.Price}}</span></h4>
 											</div>
 											<div class="snipcart-details top_brand_home_details">
 												<!-- <form action="#" method="post"> -->
-													<!-- <fieldset> -->
-														
-														 {%if  request.user.is_authenticated%}
-														<input type="button" onclick="AddToCart({{bookDetail.bookEdition.id}})" name="submit" value="Add to cart" class="button">
-														{%else%}
-														<a href="{% url 'customer-login' %}">
-														<input type="button"  name="submit" value="Log in For cart" class="button">
-														</a>
-														{%endif%}
-													<!-- </fieldset> -->
+												<!-- <fieldset> -->
+
+												{%if  request.user.is_authenticated%}
+												<input type="button" onclick="AddToCart({{bookDetail.bookEdition.id}})" name="submit" value="Add to cart" class="button">
+												{%else%}
+												<a href="{% url 'customer-login' %}">
+													<input type="button"  name="submit" value="Log in For cart" class="button">
+												</a>
+												{%endif%}
+												<!-- </fieldset> -->
 												<!-- </form> -->
 											</div>
 										</div>
@@ -97,33 +102,38 @@
 				</div>
 				{%endif%}
 				{%endfor%}
-				</table>
 			</div>
-				<nav class="numbering">
-					<ul class="pagination paging">
-						<li>
-							<a href="#" aria-label="Previous">
-								<span aria-hidden="true">&laquo;</span>
-							</a>
-						</li>
-						<li class="active"><a href="#">1<span class="sr-only">(current)</span></a></li>
-						<li><a href="#">2</a></li>
-						<!-- <li><a href="#">3</a></li>
-						<li><a href="#">4</a></li>
-						<li><a href="#">5</a></li> -->
-						<li>
-							<a href="#" aria-label="Next">
+			
+			<nav class="numbering">
+				<ul class="pagination paging">
+					<li>{% if bookDetailList.has_previous %}
+						<a href="?page={{ bookDetailList.previous_page_number }}">
+							<span aria-hidden="true">&laquo;</span>
+						</a>
+						{% endif %}
+
+					</li>
+					<li>
+					<span class="current">
+						Page {{ bookDetailList.number }} of {{ bookDetailList.paginator.num_pages }}
+					</span>
+					</li>
+
+					<li>
+						{% if bookDetailList.has_next %}
+						<a href="?page={{ bookDetailList.next_page_number }}">
 							<span aria-hidden="true">&raquo;</span>
-							</a>
-						</li>
-					</ul>
-				</nav>
+						</a>
+						{% endif %}
+					</li>
+				</ul>
+			</nav>
 		</div>
 	</div>
 </div>
 <script type="text/javascript">
 
-		var AddToCart=function($Book_id) {
+	var AddToCart=function($Book_id) {
 			// if( confirm('Do you want Delete this Author')){
 				$.get("/add-to-cart/"+$Book_id)
 				.done(
@@ -137,6 +147,6 @@
 			// }
 		};
 
-</script>
+	</script>
 
-{%endblock%}
+	{%endblock%}

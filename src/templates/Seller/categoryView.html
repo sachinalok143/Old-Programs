@@ -31,7 +31,7 @@
 			</div> -->
 			<div class="col-md-12 products-right">
 				<div class="products-right-grid">
-					<div class="products-right-grids">
+					<!-- <div class="products-right-grids">
 						<div class="sorting">
 							<select id="country" onchange="change_country(this.value)" class="frm-field required sect">
 								<option value="null"><i class="fa fa-arrow-right" aria-hidden="true"></i>Default sorting</option>
@@ -50,11 +50,38 @@
 						</div>
 						<div class="clearfix"> </div>
 					</div>
-				</div>
+				</div> -->
 				<div id="veiw">
 				{%include 'Seller/categoryIndividualView.html'%}
 				</div>
+
 			</div>
+				
+			<nav class="numbering">
+				<ul class="pagination paging">
+					<li>{% if bookDetailList.has_previous %}
+						<a href="?page={{ bookDetailList.previous_page_number }}">
+							<span aria-hidden="true">&laquo;</span>
+						</a>
+						{% endif %}
+
+					</li>
+					<li>
+					<span class="current">
+						Page {{ bookDetailList.number }} of {{ bookDetailList.paginator.num_pages }}
+					</span>
+					</li>
+
+					<li>
+						{% if bookDetailList.has_next %}
+						<a href="?page={{ bookDetailList.next_page_number }}">
+							<span aria-hidden="true">&raquo;</span>
+						</a>
+						
+						{% endif %}
+					</li>
+				</ul>
+			</nav>
 		</div>
 	</div>
 </div>

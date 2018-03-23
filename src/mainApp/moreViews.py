@@ -8,6 +8,7 @@ from django.contrib.auth import (
 	login,
 	logout,
 	)
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseRedirect
 from django.db.models import Sum,Avg
 
@@ -201,7 +202,7 @@ def getSearchResult(request):
 				self.book = book
 				self.bookEdition = bookEdition
 				self.discountedPrice=discountedPrice
-		bookDetailList=[]
+		bookDetailList1=[]
 		for book in books:
 			bookEditions=BookEdition.objects.filter(Book_id=book.id)
 			if bookEditions.count()>0:
@@ -209,7 +210,15 @@ def getSearchResult(request):
 				for bookEdition in bookEditions :
 					d=bookEdition.Price*bookEdition.Discount/100
 					d=bookEdition.Price-d
-					bookDetailList.append(completeBookDetail(book,bookEdition,d))
+					bookDetailList1.append(completeBookDetail(book,bookEdition,d))
+		paginator = Paginator(bookDetailList1, 9)
+		page = request.GET.get('page')
+		try:
+			bookDetailList = paginator.page(page)
+		except PageNotAnInteger:
+			bookDetailList = paginator.page(1)
+		except EmptyPage:
+			bookDetailList = paginator.page(paginator.num_pages)			
 		return render(request,"categoryView.html",{"bookDetailList":bookDetailList,
 			"categories":Category_set,"CategoryName":C})
 	else :
@@ -225,13 +234,21 @@ def getBookBySeller(request,id=None):
 				self.book = book
 				self.bookEdition = bookEdition
 				self.discountedPrice=discountedPrice
-		bookDetailList=[]
+		bookDetailList1=[]
 		if bookEditions.count()>0:
 			for bookEdition in bookEditions :
 				book=Book.objects.get(id=bookEdition.Book_id)
 				d=bookEdition.Price*bookEdition.Discount/100
 				d=bookEdition.Price-d
-				bookDetailList.append(completeBookDetail(book,bookEdition,d))
+				bookDetailList1.append(completeBookDetail(book,bookEdition,d))
+		paginator = Paginator(bookDetailList1, 9)
+		page = request.GET.get('page')
+		try:
+			bookDetailList = paginator.page(page)
+		except PageNotAnInteger:
+			bookDetailList = paginator.page(1)
+		except EmptyPage:
+			bookDetailList = paginator.page(paginator.num_pages)
 		return render(request,"Seller/categoryView.html",{"bookDetailList":bookDetailList,
 			"categories":Category_set,"CategoryName":C})
 		return HttpResponseRedirect('')
@@ -248,13 +265,21 @@ def deleteBook(request,Book_id=None,id=None):
 					self.book = book
 					self.bookEdition = bookEdition
 					self.discountedPrice=discountedPrice
-			bookDetailList=[]
+			bookDetailList1=[]
 			if bookEditions.count()>0:
 				for bookEdition in bookEditions :
 					book=Book.objects.get(id=bookEdition.Book_id)
 					d=bookEdition.Price*bookEdition.Discount/100
 					d=bookEdition.Price-d
-					bookDetailList.append(completeBookDetail(book,bookEdition,d))
+					bookDetailList1.append(completeBookDetail(book,bookEdition,d))
+			paginator = Paginator(bookDetailList1, 9)
+			page = request.GET.get('page')
+			try:
+				bookDetailList = paginator.page(page)
+			except PageNotAnInteger:
+				bookDetailList = paginator.page(1)
+			except EmptyPage:
+				bookDetailList = paginator.page(paginator.num_pages)
 			return render(request,"Seller/categoryIndividualView.html",{"bookDetailList":bookDetailList,
 				"categories":Category_set,"CategoryName":C})
 	return HttpResponseRedirect('')
@@ -277,7 +302,7 @@ def getSellerSingleBook(request,id=None):
 		y=Category.objects.get(id=x.Category_id)
 		C.append(str(y.Name))
 	bookDetail=completeBookDetail(book,bookEdition,d,C)
-		# print (bookDetailList)\
+		# print (bookDetailList1)\
 
 	allReviews=Review.objects.filter(Book_id=bookEdition.id).order_by("-Created_at")
 	indiRating=Review.objects.filter(Book_id=bookEdition.id).order_by("-Created_at").aggregate(Avg('Ratings'))
