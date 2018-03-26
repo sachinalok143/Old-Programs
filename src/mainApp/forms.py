@@ -8,6 +8,7 @@ from django.contrib.auth import (
 	logout,
 	)
 
+from django.utils.translation import ugettext_lazy as _
 
 class AddAuthorForm(forms.ModelForm):
 	class Meta:
@@ -72,7 +73,11 @@ class RegistrationForm(forms.ModelForm):
 		if email_qs.exists():
 			raise forms.ValidationError("This email has already been registered.")
 		return email
-
+	labels = {
+            "first_name": _("First Name"),
+        	"last_name":_("Last Name"),
+        	
+        }
 
 class CustomerForm(forms.ModelForm):
 	class Meta:
@@ -86,9 +91,15 @@ class CustomerForm(forms.ModelForm):
 		'Country',
 		'PinCode',
 		'AddressLine',
-		'ProfileImg',
+		# 'ProfileImg',
 		]
-
+		labels = {
+            "PriPhone": _("Primary Phone No"),
+        	"SecPhone":_("Secondary Phone No"),
+        	"PinCode":_("Pin Code"),
+        	"AddressLine":_("Address Line"),
+        	"LandMark":_("Land-Mark"),
+	        }
 
 class SellerForm(forms.ModelForm):
 	class Meta:
@@ -102,10 +113,19 @@ class SellerForm(forms.ModelForm):
 		'Country',
 		'PinCode',
 		'AddressLine',
-		'ProfileImg',
+		# 'ProfileImg',
 		'Remark',
 		'AdharNo',
 		]
+		labels = {
+            "PriPhone": _("Primary Phone No"),
+        	"SecPhone":_("Secondary Phone No"),
+        	"PinCode":_("Pin Code"),
+        	"AddressLine":_("Address Line"),
+        	"AdharNo":_("Adhaar No"),
+	        "LandMark":_("Land-Mark"),
+	        }
+
 class AdminForm(forms.ModelForm):
 	class Meta:
 		model=Admin
@@ -118,24 +138,28 @@ class PublisherForm(forms.ModelForm):
 		model=Publisher
 		fields=[
 		'Name',
-		'Publication',
+		# 'Publication',
 		'Address',
 		'email',
 		'Phone',
 		]
-
+		labels = {
+            "email": _("Email Address"),
+	        }
 	def clean_email(self):
 		email=self.cleaned_data.get("email")
 		email_qs=Publisher.objects.filter(email=email)
-		if email_qs.exists():
-			raise forms.ValidationError("This Email has already registered.")
+		if email:
+			if email_qs.exists():
+				raise forms.ValidationError("This Email has already registered.")
 		return email
 
 	def clean_Phone(self):
 		Phone=self.cleaned_data.get("Phone")
-		Phone_qs=Publisher.objects.filter(Phone=Phone)
-		if Phone_qs.exists():
-			raise forms.ValidationError("This Phone no has already registered.")
+		if Phone:
+			Phone_qs=Publisher.objects.filter(Phone=Phone)
+			if Phone_qs.exists():
+				raise forms.ValidationError("This Phone no has already registered.")
 		return Phone
 
 class BookForm(forms.ModelForm):
@@ -186,12 +210,20 @@ class BookEditionForm(forms.ModelForm):
 			'Edition',
 			'YearOfPublication',
 			'Price',
-			'CoverImage',
+			# 'CoverImage',
 			'PageCount',
 			'Discount',
 			'AvailableNoOfCopies',
-			
 		]
+		labels = {
+            "YearOfPublication": _("Year Of Publication"),
+        	"PageCount":_("No. of Pages"),
+        	"AvailableNoOfCopies":_("No Of Copies Available "),
+        }
+        # placeholers = { 
+        #     " "YearOfPublication"": _("e.g:1656"),
+
+        # }
 
 
 class ReviewForm(forms.ModelForm):

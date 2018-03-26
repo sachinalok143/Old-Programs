@@ -11,7 +11,7 @@ class AuthorAdmin(admin.ModelAdmin):
 		model = Author
 
 class PublisherAdmin(admin.ModelAdmin):
-	list_display=["id","Name","Publication","Address","email","Phone","Updated_at","Created_at"]# Publisher._meta.get_all_field_names()#["id","Name","Ratings","Updated_at","Created_at"]
+	list_display=["id","Name","Address","email","Phone","Updated_at","Created_at"]# Publisher._meta.get_all_field_names()#["id","Name","Ratings","Updated_at","Created_at"]
 	form=PublisherForm
 	class Meta:
 		model = Publisher

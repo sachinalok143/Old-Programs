@@ -27,9 +27,9 @@ class Author(models.Model):
 
 class Publisher(models.Model):
 	Name=models.CharField(max_length=120,null=True)
-	Publication=models.CharField(max_length=120,blank=True,null=True)
+	# Publication=models.CharField(max_length=120,blank=True,null=True)
 	Address=models.TextField(max_length=500,blank=True,null=True)
-	email=models.EmailField()
+	email=models.EmailField(blank=True,null=True)
 	Phone=models.DecimalField(max_digits=10, decimal_places=False,blank=True,null=True)
 	Updated_at=models.DateTimeField(auto_now_add=False,auto_now=True)
 	Created_at=models.DateTimeField(auto_now_add=True,auto_now=False)
@@ -110,7 +110,7 @@ class BookEdition(models.Model):
 		validators=[
 		MinValueValidator(1000), 
 		MaxValueValidator(datetime.now().year)],
-		help_text="Use the following format: <YYYY>")
+		help_text="Use the following format:YYYY")
 	Price=models.IntegerField(default=0)
 	CoverImage=models.ImageField(upload_to = 'img/BookCvr/', default = 'img/BookCvr/no-img.jpg')
 	PageCount=models.IntegerField(default=0)

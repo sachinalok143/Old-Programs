@@ -44,9 +44,9 @@
 							</li>
 							<li>
 								
-								{% if orderObject.orderObject.DateOfDelivery%}
+								{% if orderObject.orderObject.DateOfDelivary%}
 								Book is delivered.
-								<span style="color: blue;font-size: 10px;">{{orderObject.orderObject.DateOfDelivery|timesince}}
+								<span style="color: blue;font-size: 10px;">{{orderObject.orderObject.DateOfDelivary|timesince}}
 								</span>
 								{%else%}
 									{% if orderObject.orderObject.DateOfShipment%}
