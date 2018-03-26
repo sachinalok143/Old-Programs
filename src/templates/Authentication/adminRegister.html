@@ -17,7 +17,7 @@
 <div class="breadcrumbs">
 		<div class="container">
 			<ol class="breadcrumb breadcrumb1 animated wow slideInLeft" data-wow-delay=".5s">
-				<li><a href="index.html"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Home
+				<li><a href="{% url 'admin-login' %}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Home
 				</a></li>
 				<li class="active">Register Page</li>
 			</ol>
@@ -30,6 +30,13 @@
 			<h2>Register Form</h2>
 		
 			<div class="login-form-grids animated wow slideInUp" data-wow-delay=".5s">
+				{%if error%}
+				<div class="alert alert-danger">
+					You are not recommened by any super admin.
+					<br>
+					<a href="mailto:sachinalok143@gmail.com ">Cantact super admin</a>
+				</div>
+				{%endif%}
 				<form action="" method="POST">{%csrf_token%}
 					{{form1|crispy}}
 					{{form2|crispy}}	

@@ -203,3 +203,16 @@ class ReviewForm(forms.ModelForm):
 		'Content',
 		'Ratings',
 		]
+class adminRecommendationForm(forms.ModelForm):
+	class Meta:
+		model=adminRecommendation
+		fields=[
+		'Email',
+		]
+	def clean_Email(self):
+		Email=self.cleaned_data.get("Email")
+		Is_existsInUser=User.objects.filter(email=Email)
+		Is_existsInAdminRec=adminRecommendation.objects.filter(Email=Email)
+		if Is_existsInAdminRec.exists() or Is_existsInUser.exists():
+			raise forms.ValidationError("This Email is already registered or in recommendation list.")
+		return Email

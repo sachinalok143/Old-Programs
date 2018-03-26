@@ -14,7 +14,9 @@
       {%else%}
       <div class="agile-login">
         <ul>
-          <li><a href=""> {{request.user.first_name}} {{request.user.last_name}} </a></li>
+          <li><a href=""> {{request.user.first_name}} {{request.user.last_name}}<br>
+           
+             </a></li>
           
           <li><a href="{%url 'auth_logout'%}">Log out</a></li>
           <li><a href="">Help</a></li>
@@ -119,11 +121,13 @@
                         <div class="row">
                           <div class="multi-gd-img">
                             <ul class="multi-column-dropdown">
-                              <h6><a href="{% url 'seller-login' %}"> {{request.user.first_name}} {{request.user.last_name}} </a></h6>
-                              <li><a href="{% url 'admin-login'%}">Your Profile</a></li>
-                        
-                             
-
+                              <h6><a href="{% url 'seller-login' %}"> {{request.user.first_name}} {{request.user.last_name}}
+                                {%if request.user.is_staff%}
+                                <br>
+                                <span style="color:blue;font-size:12px;"><i class="fa fa-circle text-success"></i>&nbsp;Super Admin</span> </a></h6>
+                             {%endif%}
+                                <li><a href="{% url 'admin-login'%}">Your Profile</a></li>
+                              <li><a href="{% url 'recommend-new-admin'%}">Recommend New Admin</a></li>
                               <!-- <li><a href="{% url 'place-order' flag=0%}">Orders</a></li> -->
                               <li><a href="{%url 'auth_logout'%}">Log out</a></li>
 

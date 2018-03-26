@@ -329,22 +329,32 @@ def adminRegisterView(request):
 	title="You are loged In as Admin! For registering a new user you have to Logout."
 	form1=RegistrationForm(request.POST or None)
 	form2=AdminForm(request.POST or None)
+	
 	if form1.is_valid():
 		title='You are registered successfully!'
 		user=form1.save(commit=False)
-		password=form1.cleaned_data.get('password')
-		username=form1.cleaned_data.get('username')
-		user.set_password(password)
-		user.save()
-		new_user=authenticate(username=user.username,password=password)
-		login(request,new_user)
+		email=form1.cleaned_data.get('email')
+		# print(email)
+		recommeded=adminRecommendation.objects.filter(Email=email)
+		if recommeded.exists():
+			recommeded.delete()
+			password=form1.cleaned_data.get('password')
+			username=form1.cleaned_data.get('username')
+			
+			user.set_password(password)
+			user.save()
+			new_user=authenticate(username=user.username,password=password)
+			login(request,new_user)
 
-		userprofile=form2.save(commit=False)
-		# userprofile.User=username
-		userprofile.User_id=request.user.id
-		t=userprofile.save()
+			userprofile=form2.save(commit=False)
+			# userprofile.User=username
+			userprofile.User_id=request.user.id
+			t=userprofile.save()
 		# print(t)
-		
+		else :
+			error=1
+			return render(request,"Authentication/adminRegister.html",
+				{"form1":form1,"form2":form2,"title":title,"categories":Category_set,"error":error})
 		# new_userProfile.save()
 	if request.user.is_authenticated():
 		if not Admin.objects.filter(User_id=request.user.id).count()>0:

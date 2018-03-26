@@ -37,8 +37,14 @@ urlpatterns = [
     url(r'^faqs/','mainApp.moreViews.faqsView',name='faqs'), 
     url(r'^place-order/(?P<flag>\d+)','mainApp.moreViews.placeOrder',name='place-order'), 
     url(r'^add-publisher/', 'mainApp.views.addPublisher', name='add-publisher'),
+    url(r'^recommend-new-admin/', 'mainApp.moreViews.recommendNewAdmin', name='recommend-new-admin'),
     url(r'^admin/', include(admin.site.urls)),
-
+    url(r'^remove-recmmendation/(?P<id>\d+)$', 'mainApp.moreViews.removeRecmmendation', name='remove-recmmendation/'),
+    url(r'^get-order-by-seller/$', 'mainApp.moreViews.getOrderBySeller', name='get-order-by-seller'),
+    url(r'^update-to-shipped/(?P<id>\d+)$', 'mainApp.moreViews.updateToShipped', name='update-to-shipped'),
+    url(r'^update-to-delivered/(?P<id>\d+)$', 'mainApp.moreViews.updateToDelivered', name='update-to-delivered'),
+			
+   
 ]
 
 

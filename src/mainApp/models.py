@@ -181,3 +181,12 @@ class Cart(models.Model):
 	Created_at=models.DateTimeField(auto_now_add=True,auto_now=False)
 	def __str__(self):
 		return str(self.Book)
+class adminRecommendation(models.Model):
+	RecommendedBy=models.ForeignKey(User)
+	Email=models.EmailField()
+	Updated_at=models.DateTimeField(auto_now_add=False,auto_now=True)
+	Created_at=models.DateTimeField(auto_now_add=True,auto_now=False)
+	def __str__(self):
+		return self.Email
+
+	

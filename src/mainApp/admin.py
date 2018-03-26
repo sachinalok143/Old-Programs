@@ -89,8 +89,13 @@ class ReviewAdmin(admin.ModelAdmin):
 	# form=ReviewForm
 	class Meta:
 		model =Review
+class adminRecommendationAdmin(admin.ModelAdmin):
+	list_display=["id","RecommendedBy","Email","Updated_at","Created_at"]
+	class Meta:
+		model=adminRecommendation
 
 admin.site.register(Author,AuthorAdmin)
+admin.site.register(adminRecommendation,adminRecommendationAdmin)
 admin.site.register(Publisher,PublisherAdmin)
 admin.site.register(Book,BookAdmin)
 admin.site.register(BookAuthor,BookAuthorAdmin)

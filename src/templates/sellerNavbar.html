@@ -183,7 +183,8 @@
                             <ul class="multi-column-dropdown">
                               <h6><a href="{% url 'seller-login' %}"> {{request.user.first_name}} {{request.user.last_name}} </a></h6>
                               <li><a href="{% url 'seller-login'%}">Your Profile</a></li>
-
+                              <li><a href="{% url 'get-order-by-seller'%}">Your Orders</a></li>
+                              
                               <li><a href="{% url 'get-book-by-seller' id=request.user.id %}">Your Books</a></li>
 
                               <!-- <li><a href="{% url 'place-order' flag=0%}">Orders</a></li> -->

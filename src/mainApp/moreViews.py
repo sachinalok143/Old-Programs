@@ -11,6 +11,8 @@ from django.contrib.auth import (
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseRedirect
 from django.db.models import Sum,Avg
+import datetime
+
 
 
 Category_set=Category.objects.all().order_by("Name")
@@ -323,5 +325,133 @@ def getSellerSingleBook(request,id=None):
 		{"bookDetail":bookDetail,"categories":Category_set,"indiRating":indiRating,"form":form,"reviewList":reviewList})
 def aboutUs(request):
 	return render(request,"Notifications/aboutUs.html",{})
+
 def faqsView(request):
 	return render(request,"Notifications/faqs.html",{})
+
+def recommendNewAdmin(request):
+	form=adminRecommendationForm(request.POST or None)
+	recommedations=adminRecommendation.objects.all()
+	if request.user.is_staff:
+		if form.is_valid():
+			instance = form.save(commit=False)
+			instance.RecommendedBy_id=request.user.id
+			instance.save()
+			recommedations=adminRecommendation.objects.all()
+			return render(request,'Admin/recommend.html',{"form":form,"recommedations":recommedations})
+			# return HttpResponseRedirect('../admin-login/')
+	else :
+		error=1
+		return render(request,'Admin/recommend.html',{"form":form,"error":error,"recommedations":recommedations})				
+	return render(request,'Admin/recommend.html',{"form":form,"recommedations":recommedations})
+
+def removeRecmmendation(request,id=None):
+	rec=adminRecommendation.objects.get(id=id)
+	rec.delete()
+	recommedations=adminRecommendation.objects.all()
+	return render(request,'Admin/recomendationTable.html',{"recommedations":recommedations})
+
+
+def getOrderBySeller(request):
+	seller=Seller.objects.filter(User_id=request.user.id)
+	orderObjectList=[]
+	orderObjects=[]
+	if seller.exists():
+		books=BookEdition.objects.filter(Seller_id=seller[0].id)
+	# 	print(books)
+		
+		for book in books:
+			tempOrders=Order.objects.filter(Book_id=book.id)
+			for tempOrder in tempOrders:
+				# print('hh')
+				orderObjects.append(tempOrder)
+			 	
+	
+		class orderObjectDetail(object):
+			def __init__(self, orderObject=None, bookEdition=None):
+				self.orderObject = orderObject
+				self.bookEdition = bookEdition
+
+		totalPrice=0
+		
+		# orderObjects=Order.objects.filter(Seller_id=seller[0].id)
+		for orderObject in orderObjects:
+			bookEdition=BookEdition.objects.get(id=orderObject.Book_id)
+			orderObjectList.append(orderObjectDetail(orderObject,bookEdition))
+			# print (ordertObjectList.count)
+			totalPrice+=(orderObject.Quantity*bookEdition.Price)
+		totalPrice+=150
+
+		return render(request,"Seller/sellerOrderView.html",{"totalPrice":totalPrice,
+		"orderObjectList":orderObjectList, "categories":Category_set})
+
+
+def updateToDelivered(request,id=None):
+	order=Order.objects.filter(id=id)
+	order.update(DateOfDelivary=datetime.datetime.now())
+	seller=Seller.objects.filter(User_id=request.user.id)
+	orderObjectList=[]
+	orderObjects=[]
+	if seller.exists():
+		books=BookEdition.objects.filter(Seller_id=seller[0].id)
+	# 	print(books)
+		
+		for book in books:
+			tempOrders=Order.objects.filter(Book_id=book.id)
+			for tempOrder in tempOrders:
+				# print('hh')
+				orderObjects.append(tempOrder)
+			 	
+	
+		class orderObjectDetail(object):
+			def __init__(self, orderObject=None, bookEdition=None):
+				self.orderObject = orderObject
+				self.bookEdition = bookEdition
+
+		totalPrice=0
+		
+		# orderObjects=Order.objects.filter(Seller_id=seller[0].id)
+		for orderObject in orderObjects:
+			bookEdition=BookEdition.objects.get(id=orderObject.Book_id)
+			orderObjectList.append(orderObjectDetail(orderObject,bookEdition))
+			# print (ordertObjectList.count)
+			totalPrice+=(orderObject.Quantity*bookEdition.Price)
+		totalPrice+=150
+
+		return render(request,"Seller/orderIndividualView.html",{"totalPrice":totalPrice,
+		"orderObjectList":orderObjectList, "categories":Category_set})
+
+def updateToShipped(request,id=None):
+	order=Order.objects.filter(id=id)
+	order.update(DateOfShipment=datetime.datetime.now())
+	seller=Seller.objects.filter(User_id=request.user.id)
+	orderObjectList=[]
+	orderObjects=[]
+	if seller.exists():
+		books=BookEdition.objects.filter(Seller_id=seller[0].id)
+	# 	print(books)
+		
+		for book in books:
+			tempOrders=Order.objects.filter(Book_id=book.id)
+			for tempOrder in tempOrders:
+				# print('hh')
+				orderObjects.append(tempOrder)
+			 	
+	
+		class orderObjectDetail(object):
+			def __init__(self, orderObject=None, bookEdition=None):
+				self.orderObject = orderObject
+				self.bookEdition = bookEdition
+
+		totalPrice=0
+		
+		# orderObjects=Order.objects.filter(Seller_id=seller[0].id)
+		for orderObject in orderObjects:
+			bookEdition=BookEdition.objects.get(id=orderObject.Book_id)
+			orderObjectList.append(orderObjectDetail(orderObject,bookEdition))
+			# print (ordertObjectList.count)
+			totalPrice+=(orderObject.Quantity*bookEdition.Price)
+		totalPrice+=150
+
+		return render(request,"Seller/orderIndividualView.html",{"totalPrice":totalPrice,
+		"orderObjectList":orderObjectList, "categories":Category_set})
