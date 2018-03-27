@@ -42,10 +42,12 @@
 				<img class="img-responsive user-photo" src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png">
 			</div><!-- /thumbnail -->
 		</div><!-- /col-sm-1 -->
-
 		<div class="col-sm-5">
 
 			<div class="txt-center">
+		{%if error%}
+		<div class="alert alert-danger">You are not Loged In as Customer.<a href="{%url 'customer-login'%}">LogIn</a></div>
+		{%endif%}
 				<form class="form" method="POST" action="" id="idForm">{% csrf_token%}
 					<!-- <label for="subject">Subject</label> -->
 					<div class="rating" required>

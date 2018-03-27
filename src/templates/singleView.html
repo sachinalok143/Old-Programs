@@ -18,8 +18,8 @@
 	<div class="container">
 		<div class="agileinfo_single">
 
-			<div class="col-md-4 agileinfo_single_left">
-				<img id="example" src="../media/{{bookDetail.bookEdition.CoverImage}}" alt=" " class="img-responsive">
+			<div class="col-md-4 agileinfo_single_left" ">
+				<img id="example" src="../media/{{bookDetail.bookEdition.CoverImage}}" alt=" " class="img-responsive" >
 			</div>
 			<div class="col-md-8 agileinfo_single_right">
 				<h2>{{bookDetail.book.Title}}</h2>
@@ -53,7 +53,9 @@
 						{%if  request.user.is_authenticated%}
 						<input type="button" onclick="AddToCart({{bookDetail.bookEdition.id}})" name="submit" value="Add to cart" class="button">
 						{%else%}
-						<input type="button" href="{% url 'customer-login' %}" name="submit" value="Log in For cart" class="button">
+						<a href="{% url 'customer-login'%}">
+						<input type="button" href="" name="submit" value="Log in For cart" class="button">
+						</a>
 						{%endif%}
 					</div>
 				</div>

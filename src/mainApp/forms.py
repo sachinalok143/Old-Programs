@@ -91,7 +91,7 @@ class CustomerForm(forms.ModelForm):
 		'Country',
 		'PinCode',
 		'AddressLine',
-		# 'ProfileImg',
+		'ProfileImg',
 		]
 		labels = {
             "PriPhone": _("Primary Phone No"),
@@ -99,6 +99,7 @@ class CustomerForm(forms.ModelForm):
         	"PinCode":_("Pin Code"),
         	"AddressLine":_("Address Line"),
         	"LandMark":_("Land-Mark"),
+        	"ProfileImg":_("Profile Picture"),
 	        }
 
 class SellerForm(forms.ModelForm):
@@ -113,7 +114,7 @@ class SellerForm(forms.ModelForm):
 		'Country',
 		'PinCode',
 		'AddressLine',
-		# 'ProfileImg',
+		'ProfileImg',
 		'Remark',
 		'AdharNo',
 		]
@@ -124,6 +125,7 @@ class SellerForm(forms.ModelForm):
         	"AddressLine":_("Address Line"),
         	"AdharNo":_("Adhaar No"),
 	        "LandMark":_("Land-Mark"),
+	        "ProfileImg":_("Profile Picture"),
 	        }
 
 class AdminForm(forms.ModelForm):
@@ -210,7 +212,7 @@ class BookEditionForm(forms.ModelForm):
 			'Edition',
 			'YearOfPublication',
 			'Price',
-			# 'CoverImage',
+			'CoverImage',
 			'PageCount',
 			'Discount',
 			'AvailableNoOfCopies',

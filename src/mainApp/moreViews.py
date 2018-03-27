@@ -22,13 +22,17 @@ def postReview(request):
 	temp=request.POST.get("star",5)
 	temp=20*int(temp)
 	review.Ratings=temp
+	error=0
 	review.Book_id=request.POST.get("bookEdition"," ")
 	if not Customer.objects.filter(user_id=request.user.id).count()>0:
-		return HttpResponseRedirect('../accounts/logout')
-	customer=Customer.objects.get(user_id=request.user.id)
-	review.Customer_id=customer.id
-	review.Content=request.POST.get("content"," nice")	
-	review.save()
+		# return HttpResponseRedirect('../accounts/logout')
+		error=1
+	if not error:
+		customer=Customer.objects.get(user_id=request.user.id)
+		review.Customer_id=customer.id
+		review.Content=request.POST.get("content"," nice")	
+		review.save()
+
 	# print(review.Book_id)
 	allReviews=Review.objects.filter(Book_id=review.Book_id).order_by("-Created_at")
 	class reviewDetail:
@@ -43,7 +47,7 @@ def postReview(request):
 		customer=Customer.objects.get(id=aReview.Customer_id)
 		user=User.objects.get(id=customer.user_id)
 		reviewList.append(reviewDetail( aReview,customer,user))
-	return render(request,"commentView.html",{"categories":Category_set,"reviewList":reviewList})
+	return render(request,"commentView.html",{"categories":Category_set,"reviewList":reviewList,"error":error})
 
 
 
@@ -71,7 +75,8 @@ def addToCart(request,Book_id=None):
 	# if request.POST :
 	# print (request.user.id)
 	if not Customer.objects.filter(user_id=request.user.id).count()>0:
-		return HttpResponseRedirect('../accounts/logout')
+		error1=1
+		return render(request,"Notifications/dummy.html" ,{"error1":error1})
 	customer=Customer.objects.get(user_id=request.user.id)
 
 	cartObj=Cart.objects.filter(Book_id=Book_id,Customer_id=customer.id)
@@ -324,10 +329,10 @@ def getSellerSingleBook(request,id=None):
 	return render(request,"Seller/singleView.html",
 		{"bookDetail":bookDetail,"categories":Category_set,"indiRating":indiRating,"form":form,"reviewList":reviewList})
 def aboutUs(request):
-	return render(request,"Notifications/aboutUs.html",{})
+	return render(request,"Notifications/aboutUs.html",{"categories":Category_set})
 
 def faqsView(request):
-	return render(request,"Notifications/faqs.html",{})
+	return render(request,"Notifications/faqs.html",{"categories":Category_set})
 
 def recommendNewAdmin(request):
 	form=adminRecommendationForm(request.POST or None)

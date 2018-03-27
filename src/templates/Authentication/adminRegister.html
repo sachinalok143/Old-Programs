@@ -25,26 +25,34 @@
 	</div>
 <!-- //breadcrumbs -->
 <!-- login -->
+	<!--  -->
 	<div class="login">
 		<div class="container">
 			<h2>Register Form</h2>
-		
-			<div class="login-form-grids animated wow slideInUp" data-wow-delay=".5s">
-				{%if error%}
-				<div class="alert alert-danger">
-					You are not recommened by any super admin.
-					<br>
-					<a href="mailto:sachinalok143@gmail.com ">Cantact super admin</a>
+		<form action="" method="POST">{%csrf_token%}
+			<div class="row">
+				<div class="col-md-6">
+					<div class="jumbotron">
+						{{form1|crispy}}
+					</div>
 				</div>
-				{%endif%}
-				<form action="" method="POST">{%csrf_token%}
-					{{form1|crispy}}
-					{{form2|crispy}}	
-					<input type="submit" value="Register">
-				</form>
+				<div class="col-md-6">
+					<div class="jumbotron">
+						{{form2|crispy}}	
+					</div>
+				</div>
 			</div>
-			<h4>For New People</h4>
-			<p><a href="{%url 'admin-login'%}">Log In</a> (Or) go back to <a href="{% url 'home' %}">Customer Home<span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span></a></p>
+			<div class="col-md-12">
+					<div class="jumbotron login-form-grids animated wow slideInUp">
+						<input type="submit" value="Register">
+					</div>
+				</div>
+		</form>
+		</div>
+		<br><br>
+		<h4>For New People</h4>
+		<hr>
+			<p><a href="{%url 'customer-login'%}">Log In</a> (Or) go back to <a href="{% url 'home' %}">Home<span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span></a></p>
 		</div>
 	</div>
 {% endif%}
